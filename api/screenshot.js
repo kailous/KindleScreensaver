@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer';  // 使用 puppeteer 而不是 puppeteer-core
 import fs from 'fs';
 import path from 'path';
 
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid size format. Use widthxheight.' });
   }
 
-  const url = process.env.VERCEL_URL ? `http://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 在 Vercel 上使用 https，本地使用 http
+  const url = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 在 Vercel 上使用 https，本地使用 http
 
   try {
     console.log(`Launching Puppeteer...`);
@@ -20,7 +20,6 @@ export default async function handler(req, res) {
     const browser = await puppeteer.launch({
       headless: true,  // 以无头模式启动
       args: ['--no-sandbox', '--disable-setuid-sandbox'],  // 防止沙盒问题
-      executablePath: '/usr/bin/chromium-browser',  // 确保使用 Vercel 环境中安装的 chromium
     });
 
     const page = await browser.newPage();
