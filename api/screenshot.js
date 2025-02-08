@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import fs from 'fs';
 import path from 'path';
 
@@ -16,9 +16,11 @@ export default async function handler(req, res) {
 
   try {
     console.log(`Launching Puppeteer...`);
+
     const browser = await puppeteer.launch({
       headless: true,  // 以无头模式启动
       args: ['--no-sandbox', '--disable-setuid-sandbox'],  // 防止沙盒问题
+      executablePath: '/usr/bin/chromium-browser',  // 确保使用 Vercel 环境中安装的 chromium
     });
 
     const page = await browser.newPage();
