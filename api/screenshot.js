@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
 
-export default async function handler(req, res) {
+export 默认 async function handler(req, res) {
   const { size } = req.query;  // 例如：600x800
   const [width, height] = size.split('x').map(val => parseInt(val, 10));
 
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     await page.setViewport({ width, height });
 
     // 获取 Vercel 部署后的 URL，若未部署则使用本地开发环境的地址
-    const url = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 保证是 http://localhost:3000
+    const url = process.env.VERCEL_URL ? `http://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 保证是 http://localhost:3000
     console.log(`Navigating to ${url}`);
     const response = await page.goto(url, {
       waitUntil: 'networkidle2', // 等待页面完全加载
