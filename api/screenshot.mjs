@@ -12,7 +12,7 @@ export 默认 async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid size format. Use widthxheight.' });
   }
 
-  const url = process.env.VERCEL_URL ? `http://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 在 Vercel 上使用 https，本地使用 http
+  const url = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 在 Vercel 上使用 https，本地使用 http
 
   try {
     console.log(`Launching Puppeteer...`);
