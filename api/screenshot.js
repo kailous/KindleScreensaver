@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';  // 使用 puppeteer 而不是 puppeteer-core
 import fs from 'fs';
 import path from 'path';
 
-export default async function handler(req, res) {
+export 默认 async function handler(req, res) {
   const { size } = req.query;  // 例如：600x800
   const [width, height] = size.split('x').map(val => parseInt(val, 10));
 
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid size format. Use widthxheight.' });
   }
 
-  const url = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 在 Vercel 上使用 https，本地使用 http
+  const url = process.env.VERCEL_URL ? `http://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 在 Vercel 上使用 https，本地使用 http
 
   try {
     console.log(`Launching Puppeteer...`);
