@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';  // 使用 puppeteer 而不是 puppeteer-core
+import puppeteer from 'puppeteer';  // 使用 import
 import fs from 'fs';
 import path from 'path';
 
