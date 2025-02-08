@@ -1,6 +1,6 @@
-import puppeteer from 'puppeteer';
-import fs from 'fs';
-import path from 'path';
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+const path = require('path');
 
 export 默认 async function handler(req, res) {
   const { size } = req.query;  // 例如：600x800
