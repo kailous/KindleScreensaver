@@ -1,8 +1,9 @@
-import puppeteer from 'puppeteer';  // 使用 import
+import puppeteer from 'puppeteer-core';
 import fs from 'fs';
 import path from 'path';
+import chrome from 'chrome-aws-lambda';
 
-export 默认 async function handler(req, res) {
+export default async function handler(req, res) {
   const { size } = req.query;  // 例如：600x800
   const [width, height] = size.split('x').map(val => parseInt(val, 10));
 
@@ -19,13 +20,12 @@ export 默认 async function handler(req, res) {
 
     const browser = await puppeteer.launch({
       headless: true,  // 以无头模式启动
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],  // 防止沙盒问题
+      args: chrome.args,
+      executablePath: await chrome.executablePath,  // 使用 chrome-aws-lambda 提供的路径
+      defaultViewport: { width, height },  // 设置浏览器视口大小
     });
 
     const page = await browser.newPage();
-
-    // 设置浏览器视口大小
-    await page.setViewport({ width, height });
 
     console.log(`Navigating to ${url}`);
     const response = await page.goto(url, {
