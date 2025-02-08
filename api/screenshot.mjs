@@ -19,9 +19,9 @@ export default async function handler(req, res) {
   try {
     console.log(`Launching Puppeteer...`);
 
-    // 使用 chrome-aws-lambda 的 Chromium 可执行路径
+    // 使用 chrome-aws-lambda 提供的 Chromium 路径
     const browser = await puppeteer.launch({
-      executablePath: await chromium.executablePath,
+      executablePath: await chromium.executablePath,  // 使用 chrome-aws-lambda 提供的 Chromium
       headless: true,
       args: chromium.args,
       defaultViewport: {
