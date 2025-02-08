@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer-core';
+import chromium from 'chrome-aws-lambda';
 import fs from 'fs';
 import path from 'path';
-import chrome from 'chrome-aws-lambda';
 
 export default async function handler(req, res) {
   const { size } = req.query;  // 例如：600x800
@@ -13,23 +13,28 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid size format. Use widthxheight.' });
   }
 
-  const url = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 在 Vercel 上使用 https，本地使用 http
+  // 确定目标页面的 URL
+  const url = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';  // 使用 Vercel 部署后的 URL 或本地地址
 
   try {
     console.log(`Launching Puppeteer...`);
 
+    // 使用 chrome-aws-lambda 的 Chromium 可执行路径
     const browser = await puppeteer.launch({
-      headless: true,  // 以无头模式启动
-      args: chrome.args,
-      executablePath: await chrome.executablePath,  // 使用 chrome-aws-lambda 提供的路径
-      defaultViewport: { width, height },  // 设置浏览器视口大小
+      executablePath: await chromium.executablePath,
+      headless: true,
+      args: chromium.args,
+      defaultViewport: {
+        width: width,
+        height: height,
+      },
     });
 
     const page = await browser.newPage();
 
     console.log(`Navigating to ${url}`);
     const response = await page.goto(url, {
-      waitUntil: 'networkidle2', // 等待页面完全加载
+      waitUntil: 'networkidle2',  // 等待页面加载完成
     });
 
     if (response.status() !== 200) {
@@ -38,26 +43,23 @@ export default async function handler(req, res) {
     }
 
     console.log("Taking screenshot...");
-
-    // 在 Vercel 临时目录中保存截图
     const screenshotPath = path.join('/tmp', 'screenshot.png');
     await page.screenshot({ path: screenshotPath });
 
     await browser.close();
 
     console.log("Returning screenshot...");
-
-    // 读取临时文件并返回图片
     const image = fs.readFileSync(screenshotPath);
 
     res.setHeader('Content-Type', 'image/png');
-    res.setHeader('Cache-Control', 'no-store');  // 防止缓存
+    res.setHeader('Cache-Control', 'no-store');
     res.status(200).send(image);
 
     // 删除临时截图文件
     fs.unlinkSync(screenshotPath);
+
   } catch (error) {
-    console.error("Error during screenshot capture:", error); // 打印详细错误信息
+    console.error("Error during screenshot capture:", error);
     res.status(500).json({ error: 'Failed to capture screenshot.' });
   }
 }
