@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自定义字体屏保</title>
+  <link rel="stylesheet" href="css/canvas.css">
+</head>
+<body>
+  <div class="calendar">
+    <div class="date-info">
+        <div class="day" id="day"></div>
+        <div class="month-year" id="month-year"></div>
+    </div>
+    <div class="text-info">
+        <div class="day-of-week" id="day-of-week"></div>
+        <div class="schedule">
+            <canvas id="progress-ring" width="32" height="32"></canvas>
+        </div>
+    </div>
+  </div>
+  <div class="cover">
+      <div class="title">
+          <div class="name">kailous'</div>
+          <div class="kindle">kindle</div>
+      </div>
+      <div class="footer">
+          <div class="tips">May your days be filled with joy, <br>
+              and your heart with peace.</div>
+          <img class="logo" src="logo.svg" alt="Logo">
+      </div>
+  </div>
+
+  <!-- 引入外部的 JavaScript 文件 -->
+  <script src="js/calendar.js"></script>
+</body>
+</html>

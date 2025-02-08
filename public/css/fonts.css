@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'ceshi';
+  src: url('../fonts/Fester-Book.ttf') format('truetype');
+  font-weight: normal; /* 默认字重 */
+  font-style: normal;
+  line-height: 100%;
+}
+
+@font-face {
+  font-family: 'ceshi';
+  src: url('../fonts/Fester-Heavy.ttf') format('truetype');
+  font-weight: bold; /* 加粗字重 */
+  font-style: normal;
+  line-height: 100%;
+}
