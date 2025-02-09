@@ -12,25 +12,29 @@ module.exports = async (req, res) => {
 
     // 构造请求体
     const requestBody = {
-      url: targetUrl,
-      viewport: { width: 600, height: 800 }
+      url: targetUrl,  // 目标网址
+      viewport: { width: 600, height: 800 }  // 截图的视窗大小
     };
 
-    // 发送POST请求到Browserless
+    // 请求 Browserless API 生成截图
     const response = await axios.post(browserlessUrl, requestBody, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      responseType: 'arraybuffer', // 返回图片数据
+      responseType: 'arraybuffer',  // 确保返回截图数据
     });
 
-    // 将图片数据保存或直接返回
+    // 如果返回的是图像数据，直接返回
     res.setHeader('Content-Type', 'image/png');
-    res.status(200).send(response.data);  // 返回截图图片数据
+    res.send(response.data);
 
   } catch (error) {
-    console.error('Error during screenshot capture:', error.response ? error.response.data : error.message);
-    res.status(500).send('Error during screenshot capture: ' + error.message);
+    console.error('Error during screenshot capture:', error);
+    if (error.response) {
+      console.error('Browserless response error:', error.response.data);
+      return res.status(500).send(`Error: ${error.response.status} - ${error.response.data}`);
+    }
+    res.status(500).send('Error during screenshot capture');
   }
 };
