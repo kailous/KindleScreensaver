@@ -3,6 +3,6 @@
     "axios": "^1.0.0"
   },
   "scripts": {
-    "start": "node server.js"  // 确保启动应用的命令
+    "start": "node server.js"
   }
 }
