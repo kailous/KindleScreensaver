@@ -2,18 +2,18 @@ const axios = require('axios');
 
 async function captureScreenshot() {
   try {
-    // 获取 Vercel 自动提供的 URL
-    const apiUrl = `https://${process.env.VERCEL_URL}`;  // 使用 Vercel 的默认域名
+    const url = `https://${process.env.VERCEL_URL || 'localhost:3000'}`;  // 这是你的主页 URL
+    const browserlessApiKey = process.env.BROWSERLESS_API_KEY;  // 使用环境变量保存 Browserless API 密钥
 
-    const response = await axios.post(`${apiUrl}/screenshot`, {
-      url: apiUrl,  // 使用 Vercel 自动生成的主页 URL
+    const response = await axios.post('https://chrome.browserless.io/screenshot', {
+      url: url,  // 目标页面的 URL（这里是 Vercel 的主页）
       viewport: { width: 600, height: 800 },
     }, {
       headers: {
-        'Authorization': `Bearer ${process.env.BROWSERLESS_API_KEY}`,  // 使用环境变量 API 密钥
+        'Authorization': `Bearer ${browserlessApiKey}`,
         'Content-Type': 'application/json',
       },
-      responseType: 'arraybuffer',
+      responseType: 'arraybuffer',  // 返回截图数据
     });
 
     const screenshot = response.data;
