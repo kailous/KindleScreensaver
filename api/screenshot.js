@@ -1,28 +1,36 @@
 const axios = require('axios');
 
-async function captureScreenshot() {
+module.exports = async (req, res) => {
   try {
-    const url = `https://${process.env.VERCEL_URL || 'localhost:3000'}`;  // 这是你的主页 URL
-    const browserlessApiKey = process.env.BROWSERLESS_API_KEY;  // 使用环境变量保存 Browserless API 密钥
+    const browserlessUrl = 'https://chrome.browserless.io/screenshot';  // Browserless API URL
+    const targetUrl = `https://${req.headers.host}`;  // 获取当前请求的主机名，构造目标 URL
+    const apiKey = process.env.BROWSERLESS_API_KEY;  // 从环境变量中获取API Key
 
-    const response = await axios.post('https://chrome.browserless.io/screenshot', {
-      url: url,  // 目标页面的 URL（这里是 Vercel 的主页）
-      viewport: { width: 600, height: 800 },
-    }, {
+    if (!apiKey) {
+      return res.status(500).send('Browserless API Key not configured.');
+    }
+
+    // 构造请求体
+    const requestBody = {
+      url: targetUrl,
+      viewport: { width: 600, height: 800 }
+    };
+
+    // 发送POST请求到Browserless
+    const response = await axios.post(browserlessUrl, requestBody, {
       headers: {
-        'Authorization': `Bearer ${browserlessApiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      responseType: 'arraybuffer',  // 返回截图数据
+      responseType: 'arraybuffer', // 返回图片数据
     });
 
-    const screenshot = response.data;
-    // 处理截图数据
-    console.log('Screenshot captured successfully');
-    return screenshot;
-  } catch (error) {
-    console.error('Error during screenshot capture:', error);
-  }
-}
+    // 将图片数据保存或直接返回
+    res.setHeader('Content-Type', 'image/png');
+    res.status(200).send(response.data);  // 返回截图图片数据
 
-captureScreenshot();
+  } catch (error) {
+    console.error('Error during screenshot capture:', error.response ? error.response.data : error.message);
+    res.status(500).send('Error during screenshot capture: ' + error.message);
+  }
+};
